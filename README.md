@@ -1,446 +1,90 @@
-# Book Nest service
+# Nest Reads
 
-## API
+## Description
+BookNest is a web application for book exchange between users. Anyone can give away a book, earn points, and use them to get other books from the community. The project supports user registration, login (including Google login), browsing and searching for books, and personalized book recommendations based on the user's preferences.
 
-### Auth
-- **registration** POST ``/auth/registration``
-````
-Request:
-{
-    "email": "alice@example.com",
-    "password": "password",
-    "fullName": "Alice"
-}
-````
-````
-Response: 
-{
-    "id": 5,
-    "email": "alice@example.com",
-    "fullName": "Alice"
-}
-````
-- **login** POST ``/auth/login``
-````
-Request:
-{
-    "email": "alice@example.com",
-    "password": "password"
-}
-````
-````
-Response:
-{
-    "token": "value"
-}
-````
-- **sign out** POST ``/auth/signout``
-``Response: User signed out successfully.``
-- **validate token** GET ``/auth/validate-token`` ``Response: 200 OK``
 
-### OAuth
-- **google** GET ``/auth/callback/google?code=``
-````
-Response:
-{
-    "token": "value"
-}
-````
-- **facebook** GET ``/auth/callback/facebook?code=``
-````
-Response:
-{
-    "token": "value"
-}
-````
+## Features
+- 🔐 User authentication and authorization (email & Google login)
 
-### User
-- **get my profile** GET ``/users/me``
-````
-Response:
-{
-    "id": 5,
-    "email": "alice@example.com",
-    "firstName": "Alice",
-    "lastName": "Snow",
-    "tokens": 0
-}
-````
-### Genre
-- **add a new genre** POST ``/genres``
-````
-Request:
-{
-    "name": "Fictions"
-}
-````
-````
-Response:
-{
-    "id": 2,
-    "name": "Fictions"
-}
-````
-- **get a genre by id** GET ``/genres/{id}``
-````
-Response:
-{
-    "id": 2,
-    "name": "Fictions"
-}
-````
-- **get all genres** GET ``/genres``
-````
-Response:
-{
-    "content": [
-        {
-            "id": 2,
-            "name": "Fictions"
-        },
-        {
-            "id": 3,
-            "name": "Young readers"
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 12,
-        "sort": {
-            "sorted": false,
-            "empty": true,
-            "unsorted": true
-        },
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
-    },
-    "last": true,
-    "totalElements": 2,
-    "totalPages": 1,
-    "first": true,
-    "size": 12,
-    "number": 0,
-    "sort": {
-        "sorted": false,
-        "empty": true,
-        "unsorted": true
-    },
-    "numberOfElements": 2,
-    "empty": false
-}
-````
-- **delete a genre by id** DELETE ``/genres/{id}``
+- 📖 Add and browse available books
 
-### Book
-- **add a new book** POST ``/books``
-````
-Request:
-{
-    "title": "The Best Of Me",
-    "author": "Nicholas SparKs",
-    "genreIds": [4, 5]
-    "condition": "Like New",
-    "description": "book for a tests",
-    "releaseYear": 1999
-}
-````
-````
-Response:
-{
-    "id": 16,
-    "title": "The Best Of Me",
-    "author": "Nicholas SparKs",
-    "condition": "Like New",
-    "genres": [
-        "Novella",
-        "Fictions"
-    ],
-    "format": "Hardcover"
-    "slug": "nicholas-sparks-the-best-of-me-16",
-    "releaseYear": 0
-}
-````
-- **get a book by id** GET ``/books/{id}``
-````
-Response:
-{
-    "id": 16,
-    "title": "The Best Of Me",
-    "author": "Nicholas SparKs",
-    "condition": "Like New",
-    "genres": ["Fictions"],
-    "format": "Hardcover"
-    "slug": "nicholas-sparks-the-best-of-me-16",
-    "releaseYear": 0
-}
-````
-- **get all books** GET ``/books?genre=Fictions&condition=Like New&format=Hardcover&sort=title:asc``
-````
-Response:
-{
-    "content": [
-        {
-            "id": 16,
-            "title": "The Best Of Me",
-            "author": "Nicholas SparKs",
-            "condition": "Like New",
-            "genres": [
-                "Novella",
-                "Fictions"
-            ],
-            "format": "Hardcover"
-            "slug": "nicholas-sparks-the-best-of-me-16",
-            "releaseYear": 0
-        }
-    ],
-    "pageable": {
-        "pageNumber": 0,
-        "pageSize": 12,
-        "sort": {
-            "empty": false,
-            "sorted": true,
-            "unsorted": false
-        },
-        "offset": 0,
-        "paged": true,
-        "unpaged": false
-    },
-    "last": true,
-    "totalPages": 1,
-    "totalElements": 9,
-    "size": 12,
-    "number": 0,
-    "sort": {
-        "empty": false,
-        "sorted": true,
-        "unsorted": false
-    },
-    "numberOfElements": 9,
-    "first": true,
-    "empty": false
-}
-````
-- **delete book by id** DELETE ``/book/{id}``
+- 🎯 Get personalized book recommendations
 
-- **update a book** PUT ``/book/{id}``
-````
-Request: (form-data)
+- 🪙 Earn points for each book you give away
 
-title: The Best Of Me
-author: Nicholas Sparks
-releaseYear: 2011
-condition: Like New
-description: new description
-file: image.png
-genreIds: 2, 3
-format: Hardcover
-````
-````
-Response:
-{
-    "id": 1,
-    "title": "The Best Of Me",
-    "author": "Nicholas Sparks",
-    "releaseYear": 2011,
-    "condition": "Like New",
-    "description": "New description",
-    "image": "iVBORw0KGgoIApL152CVJVSf8O..." //Base64
-    "format": "Hardcover"
-    "genres": [
-        "Novella",
-        "Fictions"
-    ]
-    "slug": "nicholas-sparks-the-best-of-me-1"
-}
-````
-### Image
-- **get an image by book`s id** GET ``/books/image/{booksId}``
-````
-The response contains an image in png format
-````
-- **put an image by book`s id** PUT ``books/{bookId}/image``
-````
-Response: Image updated successfully
-````
-### Favorites
-- **add a book to favorites** POST ``/favorites``
-````
-Request:
-{
-    "bookId": 9
-}
-````
-``The response contains 200 Status OK``
-- **remove a book from favorites** DELETE ``/favorites/{bookId}`` 
-````
-The response contains 200 Status OK
-````
-- **get all books from favorites** GET ``/favorites``
-````
-Response:
-[
-    {
-        "id": 10,
-        "title": "updated title",
-        "author": "updated author2",
-        "condition": "Like New",
-        "description": "Updated description",
-        "slug": "updated-author2-updated-title-10",
-        "format": "Hardcover",
-        "genres": [
-            "demo genre",
-            "demo genre2"
-        ],
-        "releaseYear": 2015
-    },
-    {
-        "id": 11,
-        "title": "The Best Of Me",
-        "author": "Nicholas SparKs",
-        "condition": "Like New",
-        "description": null,
-        "slug": "nicholas-sparks-the-best-of-me-11",
-        "format": null,
-        "genres": [
-            "Novella",
-            "Fictions"
-        ],
-        "releaseYear": 0
-    }
-]
-````
-### Donated
-- **get all donated books** GET ``/donated``
-````
-Response:
-[
-    {
-        "id": 15,
-        "title": "The Best Of Me",
-        "author": "Nicholas SparKs",
-        "condition": "Like New",
-        "description": null,
-        "slug": "nicholas-sparks-the-best-of-me-15",
-        "format": null,
-        "genres": [
-            "Fictions",
-            "Novella"
-        ],
-        "releaseYear": 0
-    },
-    {
-        "id": 16,
-        "title": "To test about donor",
-        "author": "Nicholas SparKs",
-        "condition": "Like New",
-        "description": null,
-        "slug": "nicholas-sparks-to-test-about-donor-16",
-        "format": null,
-        "genres": [
-            "Fictions",
-            "Novella"
-        ],
-        "releaseYear": 0
-    }
-]
-````
-### Received
-- **get all received books** GET ``/received``
-````
-Response:
-[]
-````
-### Recommendation
-- **get recommendations for user** GET ``/recommendations``
-````
-Response:
-[
-    {
-        "id": 15,
-        "title": "The Best Of Me",
-        "author": "Nicholas SparKs",
-        "condition": "Like New",
-        "description": null,
-        "slug": "nicholas-sparks-the-best-of-me-15",
-        "format": null,
-        "genres": [
-            "Fictions",
-            "Novella"
-        ],
-        "releaseYear": 0
-    },
-    {
-        "id": 16,
-        "title": "To test about donor",
-        "author": "Nicholas SparKs",
-        "condition": "Like New",
-        "description": null,
-        "slug": "nicholas-sparks-to-test-about-donor-16",
-        "format": null,
-        "genres": [
-            "Fictions",
-            "Novella"
-        ],
-        "releaseYear": 0
-    }
-]
-````
-- **Get recommendations for guest GET ``guest/recommendations``
-````
-Response contains list of 9 books
-````
-### Titles
-- **Get all book titles** GET ``/books/titles``
-````
-Response:
-[
-    "The Best Of Me",
-    "The Best Of Me1",
-    "The Best Of Me2",
-    "The Best Of Me3"
-]
-````
-### Shopping Cart
-- **get shopping cart** GET ``/shopping-carts``
-````
-Response:
-{
-    "id": 6,
-    "userId": 12,
-    "books": [
-        {
-            "id": 15,
-            "title": "The Best Of Me",
-            "author": "Nicholas SparKs",
-            "condition": "Like New",
-            "description": null,
-            "slug": "nicholas-sparks-the-best-of-me-15",
-            "format": null,
-            "genres": [
-                "Novella",
-                "Fictions"
-            ],
-            "releaseYear": 0
-        }
-    ]
-}
-````
-- **add book to shopping cart** POST ``/shopping-carts/books/{bookId}`` \
-``Response: 200 OK (Status)``
-- **remove book from shopping cart** DELETE ``/shopping-carts/books/remove/{bookId}`` \
-  ``Response: 200 OK (Status)``
-### Order
-- **create order** POST ``/orders``
-````
-Response:
-{
-    "id": 1,
-    "userEmail": "will@example.com",
-    "bookTitles": [
-        "The Best Of Me"
-    ],
-    "orderStatus": "NEW",
-    "createdAt": "2025-03-13T19:13:07.4736746"
-}
-````
+- 📦 Spend points to request books from other users
+
+## Technologies Used
+
+- **Spring Boot version 3.4.1**: For building and running the application.
+- **Spring Data JPA version 3.4.1**: For interacting with the database using JPA.
+- **Spring Security version 3.4.1**: For implementing security features such as authentication and authorization.
+- **MySQL version 8.0.33**: For the relational database management system.
+- **Liquibase version 4.30.0**: For database versioning and migrations.
+- **JWT version 0.12.6**: For secure token-based authentication.
+- **MapStruct version 1.6.3**: For automatic mapping between entities and DTOs.
+- **JUnit 5 version 5.11.4**: For writing and running tests.
+- **TestContainers version 1.20.4**: For running isolated test environments with Docker containers.
+- **Lombok version 1.18.36**: For reducing boilerplate code with annotations like `@Getter`, `@Setter`, `@AllArgsConstructor`, etc.
+
+## Project's API
+[View Postman Collection](https://www.postman.com/planetary-robot-110333/workspace/nest-reads-project/collection/40055606-8a491912-7ce9-4fbf-8ae5-8fde3e306b02?action=share&creator=40055606)
+
+## DB Diagram
+![Example Image](images/db.diagram.png)
+
+## Installation and Setup
+
+### Prerequisites
+
+- **Java 21** or higher
+- **Maven** (for building the project)
+- **MySQL** or another compatible database (you can adjust the configuration for another DB if needed)
+- **Git** (for cloning the repository)
+
+### Step 1: Clone the Repository
+
+Clone the repository from GitHub:
+
+```bash
+git clone https://github.com/StoneBlood-bit/nest-reads
+```
+### Step 2: Configure Database
+- **1.** Install and run MySQL (or another database). If you're using MySQL locally, create a new database:
+```
+CREATE DATABASE nest-reads
+```
+- **2.** Configure your database connection. In the application.properties file (located in src/main/resources), adjust the connection settings:
+```
+spring.datasource.url=your.url
+spring.datasource.username=your.username
+spring.datasource.password=your.password
+```
+### Step 3: Configure the `.env` file
+
+- Create the .env file in the root directory of the project if it doesn’t already exist.
+- Add the following configuration to the .env file:
+```
+JWT_SECRET= your secret
+GOOGLE_CLIENT_ID= your client id for OAuth
+GOOGLE_CLIENT_SECRET= your client secret for OAuth
+```
+- Ensure the `.env` file is not committed to version control by adding it to the .gitignore file:
+```
+# .gitignore
+.env
+```
+### Step 4: Load the .env File
+To load the .env file into your Spring Boot application, you can use the dotenv library (for example, by adding a dependency in pom.xml if needed). However, Spring Boot typically loads environment variables from the system, so you can use the variables directly with @Value annotations or in application.properties:
+`jwt.secret=${JWT_SECRET}`
+### Step 5: Build the project
+If you have Maven installed, build the project using:
+```bash
+mvn clean install
+```
+### Step 6: Run the application
+To run the application locally, use:
+```bash
+mvn spring-boot:run
+```
